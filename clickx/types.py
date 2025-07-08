@@ -1,0 +1,46 @@
+import importlib.resources
+import sys
+import typing as t
+from pathlib import Path
+
+import click
+
+
+class PackageIcon(click.ParamType):
+    name = "ICON"
+
+    def __init__(
+        self,
+        filename: str,
+        package_name: t.Optional[str] = None,
+        exitcode: t.Optional[int] = None,
+    ):
+        self._filename = filename
+        self._package = package_name or __package__
+        self._exitcode = exitcode
+
+    def convert(self, value, param, ctx):
+        # value here is the flag‐value (True or False)
+        if not value:
+            return value
+
+        # exactly the same logic you had in your callback:
+        try:
+            if getattr(sys, "frozen", False):
+                file = sys.executable
+            else:
+                with importlib.resources.path(
+                    self._package, self._filename
+                ) as icon_file:
+                    file = icon_file
+
+            icon = Path(file).resolve(True)
+
+        except Exception as e:
+            ctx.fail(str(e))
+        else:
+            if self._exitcode:
+                click.echo(message=str(icon), err=True)
+                ctx.exit(self._exitcode)
+
+            return icon
