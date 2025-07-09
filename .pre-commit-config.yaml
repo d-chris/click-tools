@@ -60,3 +60,11 @@ repos:
     hooks:
       - id: mypy
         language_version: python3.9
+  - repo: local
+    hooks:
+      - id: clickx-icon
+        name: Convert images to icons
+        language: system
+        entry: poetry run python -m clickx icon
+        files: clickx.png$
+        args: ["--icon", "clickx/clickx.ico"]

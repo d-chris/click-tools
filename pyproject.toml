@@ -10,6 +10,7 @@ authors = [ "Christoph Dörrer <d-chris@web.de>" ]
 readme = "README.md"
 homepage = "https://github.com/d-chris/click-tools.git"
 packages = [ { include = "clickx" } ]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -24,3 +25,7 @@ clickx = "clickx.__main__:cli"
 all = [ "click-validators", "pillow" ]
 validators = [ "click-validators" ]
 pillow = [ "pillow" ]
+
+[tool.poetry.group.build.dependencies]
+pyinstaller = { version = ">=6.14.2", python = "<3.14" }
+vscode-task-runner = ">=2.1.0"

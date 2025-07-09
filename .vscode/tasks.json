@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-exe",
+            "type": "shell",
+            "command": "pyinstaller",
+            "args": [
+                "--onefile",
+                "--icon",
+                "clickx/clickx.ico",
+                "--copy-metadata",
+                "click_tools",
+                "--name",
+                "clickx",
+                "clickx/__main__.py"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "owner": "python",
+                "pattern": {
+                    "regexp": "^(\\d+) (WARNING|ERROR): (.*)$",
+                    "severity": 2,
+                    "message": 3
+                }
+            },
+            "detail": "Build the executable using PyInstaller"
+        }
+    ]
+}

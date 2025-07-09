@@ -4,7 +4,7 @@ from pathlib import Path
 import click
 
 
-def main(
+def icon(
     picture: str,
     icon: t.Optional[str] = None,
     size: t.Optional[tuple[int]] = None,
@@ -37,7 +37,7 @@ def main(
         return exitcode
 
 
-@click.command(help=main.__doc__)
+@click.command(help=icon.__doc__)
 @click.argument(
     "picture",
     type=click.Path(exists=True, dir_okay=False),
@@ -57,5 +57,5 @@ def main(
     multiple=True,
     help="Multiple sizes for the icon.",
 )
-def cli(**kwargs):
-    raise SystemExit(main(**kwargs))
+def cli_icon(**kwargs):
+    raise SystemExit(icon(**kwargs))

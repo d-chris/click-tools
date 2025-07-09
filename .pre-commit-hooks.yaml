@@ -1,8 +1,9 @@
 - id: clickx-icon
-  name: Convert images to icons
+  name: convert image to icon
   description: Convert image files to Windows ICO format with multiple sizes
   entry: clickx icon
   additional_dependencies:
     - pillow
   language: python
+  require_serial: true
   files: ^$

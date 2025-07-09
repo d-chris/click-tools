@@ -11,17 +11,18 @@ class PackageIcon(click.ParamType):
 
     def __init__(
         self,
-        filename: str,
-        package_name: t.Optional[str] = None,
+        filename: t.Optional[str] = None,
+        package: t.Optional[str] = None,
         exitcode: t.Optional[int] = None,
     ):
         self._filename = filename
-        self._package = package_name or __package__
+        self._package = package or __package__
         self._exitcode = exitcode
 
     def convert(self, value, param, ctx):
         # value here is the flag‐value (True or False)
-        if not value:
+        if value is False:
+            # If the flag is not set, we return None
             return value
 
         # exactly the same logic you had in your callback:
@@ -29,9 +30,12 @@ class PackageIcon(click.ParamType):
             if getattr(sys, "frozen", False):
                 file = sys.executable
             else:
-                with importlib.resources.path(
-                    self._package, self._filename
-                ) as icon_file:
+                if self._package is None:
+                    raise ctx.fail("'package_name' name is missing.")
+
+                filename = value if isinstance(value, str) else self._filename
+
+                with importlib.resources.path(self._package, filename) as icon_file:
                     file = icon_file
 
             icon = Path(file).resolve(True)
@@ -39,7 +43,7 @@ class PackageIcon(click.ParamType):
         except Exception as e:
             ctx.fail(str(e))
         else:
-            if self._exitcode:
+            if self._exitcode is not None:
                 click.echo(message=str(icon), err=True)
                 ctx.exit(self._exitcode)
 

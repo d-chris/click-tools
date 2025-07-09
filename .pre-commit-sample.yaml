@@ -1,0 +1,6 @@
+- repo: https://github.com/d-chris/click-tools
+  rev: HEAD
+  hooks:
+    - id: clickx-icon
+      files: clickx.png$
+      args: ["--icon", "clickx/clickx.ico"]

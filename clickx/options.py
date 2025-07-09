@@ -5,6 +5,8 @@ import typing as t
 
 import click
 
+from .types import PackageIcon
+
 if t.TYPE_CHECKING:
     from click.decorators import FC
 
@@ -31,3 +33,18 @@ def version(
         )(func)
 
     return decorator
+
+
+def icon(
+    filename: str,
+    package: t.Optional[str] = None,
+) -> t.Callable[[FC], FC]:
+
+    return click.option(
+        "--icon",
+        type=PackageIcon(filename, package, exitcode=0),
+        is_flag=True,
+        is_eager=True,
+        expose_value=False,
+        help="Show path to the package icon.",
+    )
