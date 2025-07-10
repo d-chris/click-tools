@@ -1,9 +1,10 @@
-import importlib.resources
 import sys
 import typing as t
 from pathlib import Path
 
 import click
+
+from .sitepackage import sitepackage_dir
 
 
 class PackageIcon(click.ParamType):
@@ -35,8 +36,7 @@ class PackageIcon(click.ParamType):
 
                 filename = value if isinstance(value, str) else self._filename
 
-                with importlib.resources.path(self._package, filename) as icon_file:
-                    file = icon_file
+                file = sitepackage_dir(self._package).joinpath(filename)
 
             icon = Path(file).resolve(True)
 

@@ -12,23 +12,28 @@ if t.TYPE_CHECKING:
 
 
 def version(
-    package_name: str,
+    distirbution_name: str,
     url: t.Optional[str] = None,
     **kwargs,
 ) -> t.Callable[[FC], FC]:
+    """
+    A variant of `click.version_option` that also prints the homepage URL from
+    the package metadata.
+    """
 
     def decorator(func):
 
-        if package_name is not None and "message" not in kwargs:
+        if distirbution_name is not None and "message" not in kwargs:
 
             def homepage():
-                metadata = importlib.metadata.metadata(package_name)
+
+                metadata = importlib.metadata.metadata(distirbution_name)
                 return metadata.get("Home-page") or metadata.get("Project-URL") or ""
 
             kwargs["message"] = f"%(prog)s, version %(version)s\n{url or homepage()}"
 
         return click.version_option(
-            package_name=package_name,
+            package_name=distirbution_name,
             **kwargs,
         )(func)
 
@@ -37,12 +42,20 @@ def version(
 
 def icon(
     filename: str,
-    package: t.Optional[str] = None,
+    distribution_name: t.Optional[str] = None,
+    param_decls: t.Optional[t.List[str]] = None,
 ) -> t.Callable[[FC], FC]:
+    """
+    Option for displaying the path to the package icon. If the package is frozen, e.g.
+    with `pyinstaller`, the path to the executable will be returned.
+    """
+
+    if not param_decls:
+        param_decls = ["--icon"]
 
     return click.option(
-        "--icon",
-        type=PackageIcon(filename, package, exitcode=0),
+        *param_decls,
+        type=PackageIcon(filename, distribution_name, exitcode=0),
         is_flag=True,
         is_eager=True,
         expose_value=False,

@@ -5,7 +5,7 @@ from clickx.cli import cli_icon
 
 
 @click.group()
-@clickx.icon("clickx.ico", "clickx")
+@clickx.icon("clickx.ico", "click_tools")
 @clickx.version("click_tools")
 def cli() -> None:
     pass
