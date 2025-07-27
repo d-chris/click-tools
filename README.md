@@ -13,9 +13,11 @@ Command line interface see help for more information.
 
 ```cmd
 $ clickx --help
-Usage: clickx.cmd [OPTIONS] COMMAND [ARGS]...
+
+Usage: clickx [OPTIONS] COMMAND [ARGS]...
 
 Options:
+  --icon     Show path to the package icon.
   --version  Show the version and exit.
   --help     Show this message and exit.
 

@@ -3,6 +3,8 @@ from pathlib import Path
 
 import click
 
+from .decorators import traceback
+
 
 def icon(
     picture: str,
@@ -28,13 +30,11 @@ def icon(
 
         print(str(ico))
     except ModuleNotFoundError:
-        exitcode = 2
         print("pip install click-tools[pillow]")
-    except Exception as e:
-        exitcode = 3
-        print(str(e))
-    finally:
-        return exitcode
+
+        exitcode = 2
+
+    return exitcode
 
 
 @click.command(help=icon.__doc__)
@@ -57,5 +57,6 @@ def icon(
     multiple=True,
     help="Multiple sizes for the icon.",
 )
+@traceback
 def cli_icon(**kwargs):
-    raise SystemExit(icon(**kwargs))
+    return icon(**kwargs)
