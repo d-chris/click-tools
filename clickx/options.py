@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.metadata
+import sys
 import typing as t
 
 import click
@@ -27,7 +28,22 @@ def version(
 
             def homepage():
 
-                metadata = importlib.metadata.metadata(distirbution_name)
+                try:
+                    metadata = importlib.metadata.metadata(distirbution_name)
+                except importlib.metadata.PackageNotFoundError as e:
+                    if getattr(sys, "frozen", False):
+                        raise RuntimeError(
+                            "\n".join(
+                                [
+                                    "Package metadata not found in executable.",
+                                    f'Add "--copy-metadata={distirbution_name}"'
+                                    "to the pyinstaller command.",
+                                ]
+                            )
+                        ) from e
+
+                    raise e
+
                 return metadata.get("Home-page") or metadata.get("Project-URL") or ""
 
             kwargs["message"] = f"%(prog)s, version %(version)s\n{url or homepage()}"
