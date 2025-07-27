@@ -13,30 +13,34 @@ if t.TYPE_CHECKING:
 def traceback(
     func: t.Optional[t.Callable] = None,
     exitcode: t.Optional[int] = 3,
+    param_decls: t.Optional[t.List[str]] = None,
 ) -> t.Union[FC, t.Callable[[FC], FC]]:
     """Decorator to catch all unhandled exception and print optionally the traceback."""
 
+    if not param_decls:
+        param_decls = ["--traceback"]
+
     def decorator(func):
         @click.option(
-            "-tb",
-            "--traceback",
+            *param_decls,
             is_flag=True,
-            help="Prints the full traceback in case of an error.",
+            help="Show the full traceback in case of an error.",
         )
         @functools.wraps(func)
         def wrapper(*args, traceback, **kwargs):
 
-            result = exitcode
             try:
-                result = func(*args, **kwargs)
+                result = func(*args, **kwargs) or 0
             except (Exception, KeyboardInterrupt) as e:
+                result = exitcode
+
                 if traceback:
                     message = tb.format_exc()
                 else:
                     message = str(e)
                 click.echo(message, err=True)
             finally:
-                raise SystemExit(result or 0)
+                raise SystemExit(result)
 
         return wrapper
 
