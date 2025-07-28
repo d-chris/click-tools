@@ -34,9 +34,10 @@ vscode-task-runner = ">=2.1.0"
 pytest = "^8.4.1"
 pytest-randomly = "^3.16.0"
 pytest-cov = "^6.2.1"
+pytest-mock = "^3.14.1"
 
 [tool.coverage.run]
 omit = [ "tests/" ]
 
 [tool.coverage.report]
-exclude_lines = [ "^if t.TYPE_CHECKING:" ]
+exclude_lines = [ "^if t.TYPE_CHECKING:", "^if __name__ == '__main__':", "^if __name__ == \"__main__\":" ]

@@ -1,8 +1,8 @@
 import click
+import pytest
 from click.testing import CliRunner
 
 import clickx
-import pytest
 
 
 @pytest.fixture

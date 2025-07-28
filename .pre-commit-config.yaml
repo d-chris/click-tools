@@ -31,7 +31,6 @@ repos:
     hooks:
       - id: reorder-python-imports
         args: ["--py39-plus"]
-        exclude: "^tests/"
   - repo: https://github.com/python-poetry/poetry
     rev: 1.8.5
     hooks:

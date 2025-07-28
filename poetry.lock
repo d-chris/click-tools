@@ -781,6 +781,23 @@ pytest = ">=6.2.5"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "virtualenv"]
 
 [[package]]
+name = "pytest-mock"
+version = "3.14.1"
+description = "Thin-wrapper around the mock package for easier use with pytest"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pytest_mock-3.14.1-py3-none-any.whl", hash = "sha256:178aefcd11307d874b4cd3100344e7e2d888d9791a6a1d9bfe90fbc1b74fd1d0"},
+    {file = "pytest_mock-3.14.1.tar.gz", hash = "sha256:159e9edac4c451ce77a5cdb9fc5d1100708d2dd4ba3c3df572f14097351af80e"},
+]
+
+[package.dependencies]
+pytest = ">=6.2.5"
+
+[package.extras]
+dev = ["pre-commit", "pytest-asyncio", "tox"]
+
+[[package]]
 name = "pytest-randomly"
 version = "3.16.0"
 description = "Pytest plugin to randomly order tests and control random.seed."
@@ -987,4 +1004,4 @@ validators = ["click-validators"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "b310be708a0a61a9a0526e5913ea3043c0c8515f13ea73b48af5475e0c8a5721"
+content-hash = "1ee29d5659f205a82a16c1e59f607be85b4f474c5eab58ff44148c76196a02ac"
