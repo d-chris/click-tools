@@ -60,7 +60,7 @@ def module_name(distribution_name: str) -> str:
     return sitepackage_dir(distribution_name).name
 
 
-def main():
+def main():  # pragma: no cover
     names = (
         "beautifulsoup4",
         "bs4",
