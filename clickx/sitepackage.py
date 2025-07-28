@@ -15,32 +15,27 @@ def sitepackage_dir(distribution_name: str) -> Path:
     try:
         file = importlib.resources.files(distribution_name)
 
-        if not file.is_dir():
-            raise ModuleNotFoundError(
-                f"Module '{distribution_name}' is not a package or not installed."
-            )
-
         return Path(str(file))
 
     except ModuleNotFoundError as e:
         modulerror = e
 
-    files = [
-        file.locate()
-        for file in importlib.metadata.files(distribution_name) or []
-        if file.name == "__init__.py"
-        and len(file.parts) == 2
-        and file.parts[0].lower() != "tests"
-    ]
-
     try:
+        files = [
+            file.locate()
+            for file in importlib.metadata.files(distribution_name) or []
+            if file.name == "__init__.py"
+            and len(file.parts) == 2
+            and file.parts[0].lower() != "tests"
+        ]
+
         return Path(files[0]).parent
-    except IndexError:
+    except (IndexError, ModuleNotFoundError):
         pass
 
-    dist = importlib.metadata.distribution(distribution_name)
-
     try:
+        dist = importlib.metadata.distribution(distribution_name)
+
         editable_path = Path(dist.origin.url.removeprefix("file:///")).resolve(True)  # type: ignore[attr-defined] # noqa: E501
 
         files = [
