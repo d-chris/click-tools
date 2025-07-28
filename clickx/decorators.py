@@ -20,6 +20,13 @@ def traceback(
     if not param_decls:
         param_decls = ["--traceback"]
 
+    try:
+        keyword = next(param for param in param_decls if param.startswith("--"))
+    except StopIteration:
+        keyword = param_decls[0]
+    finally:
+        keyword = keyword.lstrip("-").replace("-", "_")
+
     def decorator(func):
         @click.option(
             *param_decls,
@@ -27,7 +34,9 @@ def traceback(
             help="Show the full traceback in case of an error.",
         )
         @functools.wraps(func)
-        def wrapper(*args, traceback, **kwargs):
+        def wrapper(*args, **kwargs):
+
+            traceback = kwargs.pop(keyword, False)
 
             try:
                 result = func(*args, **kwargs) or 0
