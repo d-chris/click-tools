@@ -53,28 +53,3 @@ def module_name(distribution_name: str) -> str:
     """Returns the module name you have to import for a given distribution name."""
 
     return sitepackage_dir(distribution_name).name
-
-
-def main():  # pragma: no cover
-    names = (
-        "beautifulsoup4",
-        "bs4",
-        "clickx",
-        "click-tools",
-        "click_tools",
-        "click-validators",
-    )
-
-    for name in names:
-
-        try:
-            p = sitepackage_dir(name)
-        except Exception as e:
-            print(f"Error finding package directory for {name}: {e}")
-            continue
-
-        print(f"Package directory for {name}: {p} {type(p)}, {module_name(name)}")
-
-
-if __name__ == "__main__":
-    main()
