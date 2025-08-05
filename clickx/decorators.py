@@ -11,27 +11,46 @@ if t.TYPE_CHECKING:
     from click.decorators import FC
 
 
+def param(param_decls: t.List[str]) -> str:
+
+    try:
+        keyword = next(param for param in param_decls if param.startswith("--"))
+    except StopIteration:
+        keyword = param_decls[0]
+
+    return keyword.lstrip("-").replace("-", "_")
+
+
 def redirect(
-    func: t.Callable | None = None,
+    func: t.Optional[t.Callable] = None,
     /,
     stdout: bool = True,
     stderr: bool = False,
     errors: bool = True,
+    param_decls: t.Optional[t.List[str]] = None,
     **kwargs,
-):
+) -> t.Union[FC, t.Callable[[FC], FC]]:
+
+    if not param_decls:
+        param_decls = ["--redirect"]
+
+    keyword = param(param_decls)
 
     kwargs.setdefault("mode", "a+")
     kwargs.setdefault("lazy", False)
 
     def decorator(func):
         @click.option(
-            "--redirect",
+            *param_decls,
             type=click.File(**kwargs),
             default=None,
             help="Redirect console output to file.",
         )
         @functools.wraps(func)
-        def wrapper(*args, redirect, **kwargs):
+        def wrapper(*args, **kwargs):
+
+            redirect = kwargs.pop(keyword, None)
+
             if redirect is None:
                 return func(*args, **kwargs)
 
@@ -65,12 +84,7 @@ def traceback(
     if not param_decls:
         param_decls = ["--traceback"]
 
-    try:
-        keyword = next(param for param in param_decls if param.startswith("--"))
-    except StopIteration:
-        keyword = param_decls[0]
-    finally:
-        keyword = keyword.lstrip("-").replace("-", "_")
+    keyword = param(param_decls)
 
     def decorator(func):
         @click.option(

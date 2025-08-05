@@ -135,3 +135,29 @@ def test_redirect_error(tmp_file):
 
     assert "Traceback (most recent call last)" in content
     assert repr(result.exception).replace("'", '"') in content
+
+
+@pytest.mark.parametrize(
+    "param_decls",
+    [
+        ["-r"],
+        ["--redirect"],
+        ["-l", "--log"],
+    ],
+    ids=lambda x: x[-1],
+)
+def test_redirect_param_decls(param_decls, tmp_file):
+    """Test the redirect decorator with custom parameter declarations."""
+
+    stdout = f"{param_decls[-1]} to stdout."
+
+    @click.command()
+    @clickx.redirect(param_decls=param_decls)
+    def cli():
+        print(stdout, flush=True)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [param_decls[-1], str(tmp_file)])
+
+    assert result.exit_code == 0
+    assert stdout in tmp_file.read_text()
