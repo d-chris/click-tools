@@ -28,7 +28,7 @@ def redirect(
     stderr: bool = False,
     errors: bool = True,
     param_decls: t.Optional[t.List[str]] = None,
-    **kwargs,
+    **attrs,
 ) -> t.Union[FC, t.Callable[[FC], FC]]:
 
     if not param_decls:
@@ -36,15 +36,25 @@ def redirect(
 
     keyword = param(param_decls)
 
-    kwargs.setdefault("mode", "a+")
-    kwargs.setdefault("lazy", False)
+    kwargs = {
+        k: attrs.pop(k, v)
+        for k, v in {
+            "mode": "a+",
+            "encoding": None,
+            "errors": "strict",
+            "lazy": False,
+            "atomic": False,
+        }.items()
+    }
+
+    attrs.setdefault("help", "Redirect console output to file.")
+    attrs.setdefault("default", None)
 
     def decorator(func):
         @click.option(
             *param_decls,
             type=click.File(**kwargs),
-            default=None,
-            help="Redirect console output to file.",
+            **attrs,
         )
         @functools.wraps(func)
         def wrapper(*args, **kwargs):

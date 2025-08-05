@@ -1,3 +1,4 @@
+import os
 import sys
 
 import click
@@ -161,3 +162,22 @@ def test_redirect_param_decls(param_decls, tmp_file):
 
     assert result.exit_code == 0
     assert stdout in tmp_file.read_text()
+
+
+def test_redirect_attrs(tmp_file):
+    """Test the redirect decorator with custom attributes."""
+
+    @click.command()
+    @clickx.redirect(envvar="LOG_FILE")
+    def cli():
+        print("print to stdout.", flush=True)
+
+    env = os.environ.copy()
+    env["LOG_FILE"] = str(tmp_file)
+
+    runner = CliRunner(env=env)
+    result = runner.invoke(cli)
+
+    assert result.exit_code == 0
+    assert result.output == ""
+    assert "stdout" in tmp_file.read_text()
