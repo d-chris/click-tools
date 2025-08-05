@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib as cl
 import functools
 import traceback as tb
 import typing as t
@@ -8,6 +9,50 @@ import click
 
 if t.TYPE_CHECKING:
     from click.decorators import FC
+
+
+def redirect(
+    func: t.Callable | None = None,
+    /,
+    stdout: bool = True,
+    stderr: bool = False,
+    errors: bool = True,
+    **kwargs,
+):
+
+    kwargs.setdefault("mode", "a+")
+    kwargs.setdefault("lazy", False)
+
+    def decorator(func):
+        @click.option(
+            "--redirect",
+            type=click.File(**kwargs),
+            default=None,
+            help="Redirect console output to file.",
+        )
+        @functools.wraps(func)
+        def wrapper(*args, redirect, **kwargs):
+            if redirect is None:
+                return func(*args, **kwargs)
+
+            with cl.ExitStack() as stack:
+                if stdout:
+                    stack.enter_context(cl.redirect_stdout(redirect))
+                if stderr:
+                    stack.enter_context(cl.redirect_stderr(redirect))
+
+                try:
+                    return func(*args, **kwargs)
+                except:  # noqa: E722
+                    if errors:
+                        tb.print_exc(file=redirect)
+                    raise
+                finally:
+                    redirect.flush()
+
+        return wrapper
+
+    return decorator(func) if callable(func) else decorator
 
 
 def traceback(
