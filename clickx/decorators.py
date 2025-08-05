@@ -105,7 +105,7 @@ def traceback(
                 if traceback:
                     message = tb.format_exc()
                 else:
-                    message = str(e)
+                    message = repr(e)
                 click.echo(message, err=True)
             finally:
                 raise SystemExit(result)
