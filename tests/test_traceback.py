@@ -101,3 +101,19 @@ def test_traceback_param_decls(param_decls):
     assert result.exit_code == 3
     assert "Error: " in result.stderr
     assert result.stderr.startswith("Traceback")
+
+
+def test_traceback_attrs():
+    """Test the traceback decorator with custom attributes."""
+
+    @click.command()
+    @clickx.traceback(help="Custom help message.")
+    def cli():
+        pass
+
+    runner = CliRunner()
+
+    result = runner.invoke(cli, ["--help"])
+
+    assert result.exit_code == 0
+    assert "Custom help message." in result.output

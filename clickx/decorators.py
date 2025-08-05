@@ -86,8 +86,10 @@ def redirect(
 
 def traceback(
     func: t.Optional[t.Callable] = None,
+    /,
     exitcode: t.Optional[int] = 3,
     param_decls: t.Optional[t.List[str]] = None,
+    **attrs,
 ) -> t.Union[FC, t.Callable[[FC], FC]]:
     """Decorator to catch all unhandled exception and print optionally the traceback."""
 
@@ -96,11 +98,13 @@ def traceback(
 
     keyword = param(param_decls)
 
+    attrs.setdefault("help", "Show the full traceback in case of an error.")
+
     def decorator(func):
         @click.option(
             *param_decls,
             is_flag=True,
-            help="Show the full traceback in case of an error.",
+            **attrs,
         )
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
