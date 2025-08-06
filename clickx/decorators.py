@@ -10,8 +10,15 @@ import click
 if t.TYPE_CHECKING:
     from click.decorators import FC
 
+    ExceptionTuple = t.Tuple[t.Type[BaseException], ...]
+
 
 def param(param_decls: t.List[str]) -> str:
+    """
+    Extract the keyword from the parameter declarations.
+
+    `click.option()` uses first parameter with `--` as keyword for a value in `kwargs`.
+    """
 
     try:
         keyword = next(param for param in param_decls if param.startswith("--"))
@@ -30,17 +37,22 @@ def redirect(
     param_decls: t.Optional[t.List[str]] = None,
     **attrs,
 ) -> t.Union[FC, t.Callable[[FC], FC]]:
+    """
+    This decorator adds an option to a `click.command()` that allows the user to specify
+    a file to which the command's output will be redirected and appended.
+    """
 
     if not param_decls:
         param_decls = ["--redirect"]
 
     keyword = param(param_decls)
+    exceptions: ExceptionTuple = attrs.pop("exceptions", (Exception,))
 
     kwargs = {
         k: attrs.pop(k, v)
         for k, v in {
-            "mode": "a+",
-            "encoding": None,
+            "mode": "w",
+            "encoding": "utf-8",
             "errors": "strict",
             "lazy": False,
             "atomic": False,
@@ -59,7 +71,7 @@ def redirect(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            redirect = kwargs.pop(keyword, None)
+            redirect: t.IO = kwargs.pop(keyword, None)
 
             if redirect is None:
                 return func(*args, **kwargs)
@@ -72,9 +84,9 @@ def redirect(
 
                 try:
                     return func(*args, **kwargs)
-                except:  # noqa: E722
+                except exceptions as e:
                     if errors:
-                        tb.print_exc(file=redirect)
+                        tb.print_exception(e, file=redirect)
                     raise
                 finally:
                     redirect.flush()
@@ -97,6 +109,7 @@ def traceback(
         param_decls = ["--traceback"]
 
     keyword = param(param_decls)
+    exceptions: ExceptionTuple = attrs.pop("exceptions", (Exception, KeyboardInterrupt))
 
     attrs.setdefault("help", "Show the full traceback in case of an error.")
 
@@ -113,7 +126,7 @@ def traceback(
 
             try:
                 result = func(*args, **kwargs) or 0
-            except (Exception, KeyboardInterrupt) as e:
+            except exceptions as e:
                 result = exitcode
 
                 if traceback:
