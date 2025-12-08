@@ -136,7 +136,7 @@ def traceback(
                     message = repr(e)
                 click.echo(message, err=True)
             finally:
-                if pause:
+                if (callable(pause) and pause()) or pause:
                     click.pause(info=f"Press any key to exit (exit code: {result})...")
 
                 raise SystemExit(result)
