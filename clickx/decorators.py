@@ -100,6 +100,7 @@ def traceback(
     func: t.Optional[t.Callable] = None,
     /,
     exitcode: t.Optional[int] = 3,
+    pause: t.Optional[bool] = False,
     param_decls: t.Optional[t.List[str]] = None,
     **attrs,
 ) -> t.Union[FC, t.Callable[[FC], FC]]:
@@ -135,6 +136,9 @@ def traceback(
                     message = repr(e)
                 click.echo(message, err=True)
             finally:
+                if pause:
+                    click.pause(info=f"Press any key to exit (exit code: {result})...")
+
                 raise SystemExit(result)
 
         return wrapper
