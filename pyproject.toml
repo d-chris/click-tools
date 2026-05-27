@@ -4,7 +4,7 @@ requires = [ "poetry-core" ]
 
 [tool.poetry]
 name = "click-tools"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 authors = [ "Christoph Dörrer <d-chris@web.de>" ]
 readme = "README.md"

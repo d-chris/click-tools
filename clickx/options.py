@@ -44,7 +44,13 @@ def version(
 
                     raise e
 
-                return metadata.get("Home-page") or metadata.get("Project-URL") or ""
+                urls = (
+                    metadata.get_all("Home-page")
+                    or metadata.get_all("Project-URL")
+                    or []
+                )
+
+                return "\n".join(urls)
 
             kwargs["message"] = f"%(prog)s, version %(version)s\n{url or homepage()}"
 
