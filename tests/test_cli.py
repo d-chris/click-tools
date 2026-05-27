@@ -29,6 +29,10 @@ def test_cli_commands(command: str) -> None:
 def test_cli_icon(tmp_icon) -> None:
     """Test the icon command."""
 
+    pytest.importorskip(
+        "PIL", reason="Pillow is missing, `poetry install --sync -E pillow`."
+    )
+
     command = [
         "icon",
         "--icon",
@@ -58,6 +62,10 @@ def test_icon_nopillow(capsys, mocker):
 
 
 def test_icon_no_file(capsys, tmp_icon, mocker):
+
+    pytest.importorskip(
+        "PIL", reason="Pillow is missing, `poetry install --sync -E pillow`."
+    )
 
     mocker.patch("pathlib.Path.is_file", return_value=False)
 
