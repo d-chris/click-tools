@@ -2,7 +2,8 @@ import importlib.metadata
 import importlib.resources
 import json
 import typing as t
-from pathlib import Path
+
+from pathlibutil import Path
 
 
 def sitepackage_dir(distribution_name: str) -> Path:
@@ -49,7 +50,10 @@ def sitepackage_dir(distribution_name: str) -> Path:
             ),
         )
 
-        editable_path = Path.from_uri(getattr(origin, "url")).resolve(True)
+        filepath = (
+            origin.get("url") if hasattr(origin, "get") else getattr(origin, "url")
+        )
+        editable_path = Path.from_uri(filepath).resolve(True)
 
         files = [
             file
