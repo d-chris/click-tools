@@ -84,9 +84,9 @@ def redirect(
 
                 try:
                     return func(*args, **kwargs)
-                except exceptions as e:
+                except exceptions:
                     if errors:
-                        tb.print_exception(e, file=redirect)
+                        tb.print_exc(file=redirect)
                     raise
                 finally:
                     redirect.flush()

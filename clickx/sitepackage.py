@@ -1,7 +1,9 @@
 import importlib.metadata
 import importlib.resources
+import json
 import typing as t
-from pathlib import Path
+
+from pathlibutil import Path
 
 
 def sitepackage_dir(distribution_name: str) -> Path:
@@ -36,7 +38,22 @@ def sitepackage_dir(distribution_name: str) -> Path:
     try:
         dist = importlib.metadata.distribution(distribution_name)
 
-        editable_path = Path(dist.origin.url.removeprefix("file:///")).resolve(True)  # type: ignore[attr-defined] # noqa: E501
+        # def get_url(dist: importlib.metadata.Distribution) -> Path:
+        #     if hasattr(dist, "origin"):
+        #         return Path.from_uri(dist.origin.url).resolve(True)
+
+        origin = getattr(
+            dist,
+            "origin",
+            json.loads(
+                dist.read_text("direct_url.json") or "{}",
+            ),
+        )
+
+        filepath = (
+            origin.get("url") if hasattr(origin, "get") else getattr(origin, "url")
+        )
+        editable_path = Path.from_uri(filepath).resolve(True)
 
         files = [
             file
@@ -53,3 +70,7 @@ def module_name(distribution_name: str) -> str:
     """Returns the module name you have to import for a given distribution name."""
 
     return sitepackage_dir(distribution_name).name
+
+
+if __name__ == "__main__":
+    sitepackage_dir("click-tools")

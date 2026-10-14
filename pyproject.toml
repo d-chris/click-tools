@@ -4,33 +4,34 @@ requires = [ "poetry-core" ]
 
 [tool.poetry]
 name = "click-tools"
-version = "0.0.2"
-description = ""
+version = "0.1.0a0"
+description = "options for click commands."
+license = "MIT"
 authors = [ "Christoph Dörrer <d-chris@web.de>" ]
 readme = "README.md"
 packages = [ { include = "clickx" } ]
-license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
 click = ">=8.1.8"
 click-validators = { version = ">=0.2.1", optional = true }
+pathlibutil = ">=0.4.0"
 pillow = { version = ">=11.3.0", optional = true }
 
-[tool.poetry.extras]
-all = [ "click-validators", "pillow" ]
-validators = [ "click-validators" ]
-pillow = [ "pillow" ]
-
 [tool.poetry.group.build.dependencies]
-pyinstaller = { version = ">=6.14.2", python = "<3.15" }
+pyinstaller = { version = ">=6.14.2", python = "<3.16" }
 vscode-task-runner = ">=2.1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = ">=8.4.1"
-pytest-randomly = ">=3.16.0"
 pytest-cov = ">=6.2.1"
 pytest-mock = ">=3.14.1"
+pytest-randomly = ">=3.16.0"
+
+[tool.poetry.extras]
+all = [ "click-validators", "pillow" ]
+pillow = [ "pillow" ]
+validators = [ "click-validators" ]
 
 [tool.poetry.scripts]
 clickx = "clickx.__main__:cli"
@@ -39,22 +40,22 @@ clickx = "clickx.__main__:cli"
 repository = "https://github.com/d-chris/click-tools.git"
 
 [tool.pyproject-fmt]
-tool_format = "short"
+table_format = "short"
 expand_tables = [ "tool.poetry" ]
 
 [tool.pytest]
 ini_options.minversion = "8.0"
 ini_options.testpaths = "tests"
 ini_options.addopts = [
-  "--color=yes",
   "--cov=clickx",
   "--cov-report=term-missing",
 ]
 
 [tool.coverage]
 run.omit = [ "tests/*" ]
+run.relative_files = true
 report.exclude_lines = [
   '^if __name__ == "__main__":',
   "^if t.TYPE_CHECKING:",
-  "pragma: no cover$",
+  "def __\\w+__",
 ]
