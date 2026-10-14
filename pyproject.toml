@@ -4,8 +4,8 @@ requires = [ "poetry-core" ]
 
 [tool.poetry]
 name = "click-tools"
-version = "0.0.2"
-description = ""
+version = "0.1.0a0"
+description = "options for click commands."
 license = "MIT"
 authors = [ "Christoph Dörrer <d-chris@web.de>" ]
 readme = "README.md"
