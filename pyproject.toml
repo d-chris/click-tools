@@ -53,6 +53,7 @@ ini_options.addopts = [
 
 [tool.coverage]
 run.omit = [ "tests/*" ]
+run.relative_files = true
 report.exclude_lines = [
   '^if __name__ == "__main__":',
   "^if t.TYPE_CHECKING:",
