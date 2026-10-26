@@ -17,6 +17,11 @@ from clickx.sitepackage import sitepackage_dir
 )
 def test_module_name(distname, package):
 
+    if distname == "pip":
+        pytest.importorskip(
+            "pip", reason=f"{package=} is missing in the test environment."
+        )
+
     assert module_name(distname) == package
 
 

@@ -15,7 +15,7 @@ def test_version() -> None:
         def cli():
             pass
 
-    assert "No package metadata was found for nonexisting" in str(e.value)
+    assert str(e.value) in "No package metadata was found for nonexisting"
 
 
 def test_version_frozen(mocker):
