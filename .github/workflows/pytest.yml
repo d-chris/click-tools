@@ -30,7 +30,7 @@ jobs:
       - name: Save Coverage Report
         uses: actions/upload-artifact@v7
         with:
-          name: coverage-${{ matrix.python-version }}-${{ matrix.os }}
+          name: coverage-${{ matrix.python-version }}-${{ matrix.os }}.xml
           path: coverage.xml
           overwrite: true
           retention-days: 1
@@ -40,6 +40,8 @@ jobs:
     steps:
       - name: Restore all Coverage Reports
         uses: actions/download-artifact@v8
+      - name: list files
+        run: ls -R
       - name: Upload Coverage Report
         uses: codecov/codecov-action@v7
         with:
